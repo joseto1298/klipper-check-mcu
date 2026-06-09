@@ -9,7 +9,7 @@ Impide que Klipper arranque si el MCU principal de la impresora no está present
 - Para que arranque automáticamente al encender la impresora, tu `moonraker.conf` debe tener:
 
 ```ini
-[power]
+[power Ender-3-S1]
 ...
 restart_klipper_when_powered: True
 restart_delay: 3.0
