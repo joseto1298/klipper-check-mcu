@@ -7,4 +7,8 @@ if [ -z "$MCU" ] || [ ! -e "$MCU" ]; then
     exit 1
 fi
 
+if ! timeout 1 head -c 1 "$MCU" > /dev/null 2>&1; then
+    exit 1
+fi
+
 exit 0
