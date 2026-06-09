@@ -1,7 +1,7 @@
 #!/bin/bash
 # check_mcu.sh - Bloquea el arranque de Klipper si el MCU de la impresora no está presente
 
-sleep 10
+sleep 5
 
 MCU=$(grep "/dev/serial/by-id/" "$HOME/printer_data/config/printer.cfg" | head -1 | sed 's/^serial:[[:space:]]*//')
 
