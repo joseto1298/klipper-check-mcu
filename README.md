@@ -7,10 +7,12 @@ Busca en `printer.cfg` el serial del MCU real (`/dev/serial/by-id/`), ignorando 
 ## Cómo funciona
 
 - Systemd ejecuta `check_mcu.sh` como `ExecCondition=` antes de arrancar Klipper
-- `sleep 5` al inicio da tiempo a que aparezca el USB serial al encender la impresora
+- `sleep` configurable (default 5s) da tiempo a que aparezca el USB serial al encender la impresora
+- Valida que `printer.cfg` existe
 - Busca la línea `serial:` que contenga `/dev/serial/by-id/` en `printer.cfg`
 - Si el device no existe (impresora apagada), `exit 1` → `exec-condition` → Klipper **no arranca**, sin bucle de reinicios
 - Si el device existe, `exit 0` → Klipper arranca normal
+- Los errores se registran en syslog
 
 ### Encendido automático de la impresora
 
@@ -23,6 +25,14 @@ restart_delay: 3.0
 ```
 
 Moonraker ejecuta `systemctl start klipper`, `ExecCondition=` espera 5s, el USB ya apareció, `exit 0` → Klipper arranca.
+
+## Logging
+
+Los errores se registran en syslog. Ver con:
+
+```bash
+journalctl -t check-mcu
+```
 
 ## Instalación
 
@@ -41,6 +51,26 @@ git pull
 ```
 
 Moonraker también actualiza automáticamente via update manager.
+
+## Configuración
+
+El delay de espera se puede ajustar añadiendo una variable de entorno en el override systemd:
+
+```bash
+sudo nano /etc/systemd/system/klipper.service.d/check-mcu.conf
+```
+
+```ini
+[Service]
+ExecCondition=/bin/bash %h/klipper-check-mcu/check_mcu.sh
+Environment=CHECK_MCU_DELAY=8
+```
+
+Luego:
+
+```bash
+sudo systemctl daemon-reload
+```
 
 ## Desinstalación
 
