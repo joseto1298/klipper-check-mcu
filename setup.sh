@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-REPO_DIR="$HOME/klipper-check-mcu"
+REAL_USER="${SUDO_USER:-$USER}"
+REPO_DIR="$(getent passwd "$REAL_USER" | cut -d: -f6)/klipper-check-mcu"
 
 echo "=== Instalando klipper-check-mcu ==="
 
