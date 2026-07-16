@@ -5,10 +5,15 @@ REPO_DIR="$HOME/klipper-check-mcu"
 
 echo "=== Instalando klipper-check-mcu ==="
 
+chmod +x "$REPO_DIR/check_mcu.sh"
+
 # --- Instalar override systemd ---
 echo "[1/2] Instalando override systemd..."
 sudo mkdir -p /etc/systemd/system/klipper.service.d
-sudo cp "$REPO_DIR/check-mcu.conf" /etc/systemd/system/klipper.service.d/
+sudo tee /etc/systemd/system/klipper.service.d/check-mcu.conf > /dev/null <<EOF
+[Service]
+ExecCondition=/bin/bash $REPO_DIR/check_mcu.sh
+EOF
 echo "OK"
 
 # --- Añadir update_manager a moonraker.conf ---
