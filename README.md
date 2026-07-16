@@ -50,9 +50,10 @@ sudo ./setup.sh
 ```bash
 cd ~/klipper-check-mcu
 git pull
+sudo ./setup.sh
 ```
 
-Moonraker también actualiza automáticamente via update manager.
+`setup.sh` es idempotente: no duplica configuración. Moonraker también actualiza automáticamente via update manager.
 
 ## Configuración
 
@@ -75,9 +76,11 @@ sudo nano /etc/systemd/system/klipper.service.d/check-mcu.conf
 
 ```ini
 [Service]
-ExecCondition=/bin/bash /home/pi/klipper-check-mcu/check_mcu.sh
+ExecCondition=/bin/bash /home/<tu-usuario>/klipper-check-mcu/check_mcu.sh
 Environment=CHECK_MCU_DELAY=8
 ```
+
+> Reemplaza `<tu-usuario>` por tu usuario real (ej: `pi`).
 
 Luego:
 
