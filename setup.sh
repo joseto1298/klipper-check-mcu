@@ -2,7 +2,8 @@
 set -e
 
 REAL_USER="${SUDO_USER:-$USER}"
-REPO_DIR="$(getent passwd "$REAL_USER" | cut -d: -f6)/klipper-check-mcu"
+USER_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
+REPO_DIR="$USER_HOME/klipper-check-mcu"
 
 echo "=== Instalando klipper-check-mcu ==="
 
@@ -27,7 +28,7 @@ echo "OK"
 
 # --- Añadir update_manager a moonraker.conf ---
 echo "[2/2] Añadiendo update_manager a moonraker.conf..."
-MOONRAKER_CFG="$HOME/printer_data/config/moonraker.conf"
+MOONRAKER_CFG="$USER_HOME/printer_data/config/moonraker.conf"
 if [ -f "$MOONRAKER_CFG" ]; then
     if grep -q "\[update_manager klipper-check-mcu\]" "$MOONRAKER_CFG"; then
         echo "OK (ya existe)"
