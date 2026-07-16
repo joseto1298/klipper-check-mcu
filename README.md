@@ -40,8 +40,10 @@ journalctl -t check-mcu
 cd ~
 git clone https://github.com/joseto1298/klipper-check-mcu.git
 cd klipper-check-mcu
-bash setup.sh
+sudo ./setup.sh
 ```
+
+`setup.sh` necesita `sudo` para instalar el override systemd y corregir `workingDirectory` → `WorkingDirectory` en `klipper.service` (error conocido de Klipper).
 
 ## Actualización
 
@@ -54,6 +56,17 @@ Moonraker también actualiza automáticamente via update manager.
 
 ## Configuración
 
+### WorkingDirectory
+
+Klipper define `workingDirectory` (minúscula) en su service file, pero systemd requiere `WorkingDirectory` (PascalCase). `setup.sh` corrige esto automáticamente. Si lo ves manualmente:
+
+```bash
+sudo sed -i 's/^workingDirectory=/WorkingDirectory=/' /etc/systemd/system/klipper.service
+sudo systemctl daemon-reload
+```
+
+### Delay de espera
+
 El delay de espera se puede ajustar añadiendo una variable de entorno en el override systemd:
 
 ```bash
@@ -62,7 +75,7 @@ sudo nano /etc/systemd/system/klipper.service.d/check-mcu.conf
 
 ```ini
 [Service]
-ExecCondition=/bin/bash %h/klipper-check-mcu/check_mcu.sh
+ExecCondition=/bin/bash /home/pi/klipper-check-mcu/check_mcu.sh
 Environment=CHECK_MCU_DELAY=8
 ```
 
@@ -71,6 +84,8 @@ Luego:
 ```bash
 sudo systemctl daemon-reload
 ```
+
+> **Nota:** No uses `%h` en `ExecCondition` — klipper corre como root, así que `%h` resuelve a `/root` en vez de `/home/pi`.
 
 ## Desinstalación
 

@@ -7,6 +7,14 @@ echo "=== Instalando klipper-check-mcu ==="
 
 chmod +x "$REPO_DIR/check_mcu.sh"
 
+# --- Corregir WorkingDirectory en klipper.service (Klipper usa lowercase por error) ---
+KLIPPER_SERVICE="/etc/systemd/system/klipper.service"
+if [ -f "$KLIPPER_SERVICE" ] && grep -q '^workingDirectory=' "$KLIPPER_SERVICE"; then
+    echo "Corrigiendo workingDirectory → WorkingDirectory en klipper.service..."
+    sudo sed -i 's/^workingDirectory=/WorkingDirectory=/' "$KLIPPER_SERVICE"
+    echo "OK"
+fi
+
 # --- Instalar override systemd ---
 echo "[1/2] Instalando override systemd..."
 sudo mkdir -p /etc/systemd/system/klipper.service.d
